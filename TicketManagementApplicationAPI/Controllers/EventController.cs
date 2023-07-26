@@ -21,7 +21,8 @@ namespace TicketManagementApplicationAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<List<EventDto>> GetAll()
+        //public async Task<ActionResult<List<EventDto>>> GetAll()
+        public ActionResult<List<EventDto>>GetAll()
         {
             var events = _eventRepository.GetAll();
             var dtoEvents = new List<EventDto>();
@@ -55,9 +56,9 @@ namespace TicketManagementApplicationAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<EventDto> GetById(int id)
+        public async Task<ActionResult<EventDto>> GetById(int id)
         {
-            var @event = _eventRepository.GetById(id);
+            var @event = await _eventRepository.GetById(id);
             
             if(@event == null)
             {
