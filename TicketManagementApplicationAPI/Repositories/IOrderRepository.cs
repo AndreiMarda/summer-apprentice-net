@@ -5,10 +5,10 @@ namespace TicketManagementApplicationAPI.Repositories
     public interface IOrderRepository
     {
         IEnumerable<Order> GetAll();
-        Order GetById(int id);
-        int Add(Order order);
+        Task <Order> GetById(int id);
+        void Add(Order order);
         void Update(Order order);
-        int Delete(int id);
+        void Delete(Order order);
 
     }
 }

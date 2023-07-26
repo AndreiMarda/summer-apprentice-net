@@ -21,8 +21,7 @@ namespace TicketManagementApplicationAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        //public async Task<ActionResult<List<EventDto>>> GetAll()
-        public ActionResult<List<EventDto>>GetAll()
+        public async Task<ActionResult<List<EventDto>>> GetAll()
         {
             var events = _eventRepository.GetAll();
             var dtoEvents = new List<EventDto>();
@@ -30,27 +29,11 @@ namespace TicketManagementApplicationAPI.Controllers
             foreach(var @event in events)
             {
                 var eventDto = new EventDto();
-                //{
-                //    EventId = @event.EventId,
-                //    EventDescription = @event.EventDescription,
-                //    EventName = @event.EventName,
-                //    EventType = @event.EventType?.Name ?? string.Empty,
-                //    Venue = @event.Venue.Location ?? string.Empty
-                //};
+                
                 eventDto = _mapper.Map<EventDto>(@event);
 
                 dtoEvents.Add(eventDto);
             }
-
-            //Linq
-            //var dtoEventsLinq = events.Select(e => new EventDto()
-            //{
-            //    EventId = e.EventId,
-            //    EventDescription = e.EventDescription,
-            //    EventName = e.EventName,
-            //    EventType = e.EventType?.Name ?? string.Empty,
-            //    Venue = e.Venue.Location ?? string.Empty
-            //});
 
             return Ok(dtoEvents);
         }
@@ -68,21 +51,23 @@ namespace TicketManagementApplicationAPI.Controllers
             
             return Ok(eventDto);
 
-
         }
         [HttpPatch]
         public async Task<ActionResult<EventPatchDto>> Patch(EventPatchDto eventPatch)
         {
-            var eventEntity = _eventRepository.GetById(eventPatch.EventId);
+            var eventEntity = await _eventRepository.GetById(eventPatch.EventId);
+
             if(eventEntity == null)
             {
                 return NotFound();
             }
             _mapper.Map(eventPatch, eventEntity);
-            _eventRepository.Update(await eventEntity); //aici pune await
+            _eventRepository.Update(eventEntity);
             return Ok(eventEntity);
         }
-        [HttpDelete] public async Task<ActionResult> Delete(int id) 
+
+        [HttpDelete] 
+        public async Task<ActionResult> Delete(int id) 
         {
             var eventEntity = await _eventRepository.GetById(id);
 
@@ -93,6 +78,5 @@ namespace TicketManagementApplicationAPI.Controllers
             _eventRepository.Delete(eventEntity);
             return NoContent();
         }
-       
     }
 }

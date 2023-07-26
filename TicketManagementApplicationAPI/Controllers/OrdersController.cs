@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using TicketManagementApplicationAPI.Model;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using TicketManagementApplicationAPI.Model.Dto;
 using TicketManagementApplicationAPI.Repositories;
 
@@ -14,12 +11,14 @@ namespace TicketManagementApplicationAPI.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-        public OrdersController(IOrderRepository orderRepository)
+        private readonly Mapper _mapper;
+        public OrdersController(IOrderRepository orderRepository, Mapper mapper)
         {
             _orderRepository = orderRepository;
+            _mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<List<OrderDto>> GetAll()
+        public async Task<ActionResult<List<OrderDto>>> GetAll()
         {
             var orders = _orderRepository.GetAll();
 
@@ -29,31 +28,60 @@ namespace TicketManagementApplicationAPI.Controllers
                 NumberOfTickets = o.NumberOfTickets,
                 TotalPrice = o.TotalPrice,
                 OrderedAt = o.OrderedAt
-
             });
-
 
             return Ok(dtoOrders);
         }
+  
         [HttpGet]
-        public ActionResult<OrderDto> GetById(int id)
+        public async Task<ActionResult<OrderDto>> GetById(int id)
         {
-            var @order = _orderRepository.GetById(id);
+            var @order = await _orderRepository.GetById(id);
 
             if (@order == null)
             {
                 return NotFound();
             }
 
-            var dtoOrder = new OrderDto()
-            {
-                OrderId = @order.OrderId,
-                NumberOfTickets = @order.NumberOfTickets,
-                TotalPrice = @order.TotalPrice,
-                OrderedAt = @order.OrderedAt
-            };
+            //var dtoOrder = new OrderDto()
+            //{
+            //    OrderId = @order.OrderId,
+            //    NumberOfTickets = @order.NumberOfTickets,
+            //    TotalPrice = @order.TotalPrice,
+            //    OrderedAt = @order.OrderedAt
+            //};
+            var orderDto = _mapper.Map<OrderDto>(@order);
 
-            return Ok(dtoOrder);
+            return Ok(orderDto);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<OrderPatchDto>> Patch(OrderPatchDto orderPatch)
+        {
+            var orderEntity = await _orderRepository.GetById(orderPatch.OrderId);
+
+            if (orderEntity == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(orderPatch, orderEntity);
+            if (orderPatch.NumberOfTickets != 0)
+                orderEntity.NumberOfTickets = orderPatch.NumberOfTickets;
+
+            _orderRepository.Update(orderEntity);
+
+            return Ok(orderEntity);
+        }
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var orderEntity = await _orderRepository.GetById(id);
+            if(orderEntity == null)
+            {
+                return NotFound();
+            }
+            _orderRepository.Delete(orderEntity);
+            return NoContent();
         }
     }
 }

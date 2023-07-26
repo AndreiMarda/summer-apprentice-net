@@ -12,9 +12,10 @@ namespace TicketManagementApplicationAPI.Repositories
             _dbContext = new TicketManagementApplicationContext();
         }
 
-        public int Add(Event @event)
+        public void Add(Event @event)
         {
-            throw new NotImplementedException();
+            _dbContext.Add(@event);
+            _dbContext.SaveChanges();
         }
 
         public void Delete(Event @event)

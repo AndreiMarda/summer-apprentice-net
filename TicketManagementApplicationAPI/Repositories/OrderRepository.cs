@@ -11,16 +11,10 @@ namespace TicketManagementApplicationAPI.Repositories
         {
             _dbContext = new TicketManagementApplicationContext();
         }
-        public int Add(Order order)
+        public void Add(Order order)
         {
-            throw new NotImplementedException();
-        }
-
-        public int Delete(int id)
-        {
-            _dbContext.Remove(id);
+            _dbContext.Orders.Add(order);
             _dbContext.SaveChanges();
-            return 0;
         }
 
         public IEnumerable<Order> GetAll()
@@ -30,9 +24,9 @@ namespace TicketManagementApplicationAPI.Repositories
             return orders;
         }
 
-        public Order GetById(int id)
+        public async Task<Order> GetById(int id)
         {
-            var order = _dbContext.Orders.Where(e => e.OrderId == id).FirstOrDefault();
+            var order = await _dbContext.Orders.Where(e => e.OrderId == id).FirstOrDefaultAsync();
 
             return order;
         }
@@ -40,6 +34,11 @@ namespace TicketManagementApplicationAPI.Repositories
         public void Update(Order order)
         {
             _dbContext.Entry(order).State = EntityState.Modified;
+            _dbContext.SaveChanges();
+        }
+        public void Delete(Order order)
+        {
+            _dbContext.Remove(order);
             _dbContext.SaveChanges();
         }
     }
