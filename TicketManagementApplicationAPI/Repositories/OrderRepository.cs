@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TicketManagementApplicationAPI.Exceptions;
 using TicketManagementApplicationAPI.Model;
 
 namespace TicketManagementApplicationAPI.Repositories
@@ -26,8 +28,9 @@ namespace TicketManagementApplicationAPI.Repositories
         public async Task<Order> GetById(int id)
         {
             var order = await _dbContext.Orders.Where(e => e.OrderId == id).FirstOrDefaultAsync();
-
-            
+           
+            if (order == null)
+                throw new EntityNotFoundException(id, nameof(Order));
 
             return order;
         }

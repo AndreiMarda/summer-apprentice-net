@@ -11,20 +11,23 @@ namespace TicketManagementApplicationAPI.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
-        public OrdersController(IOrderRepository orderRepository, IMapper mapper)
+        private readonly ILogger _logger;
+        public OrdersController(IOrderRepository orderRepository, IMapper mapper, ILogger logger)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
+            _logger = logger;
         }
         [HttpGet]
         public ActionResult<List<OrderDto>> GetAll()
         {
+
             var @order = _orderRepository.GetAll();
 
             var dtoOrdersMapper = _mapper.Map<List<OrderDto>>(@order);
 
             return Ok(dtoOrdersMapper);
-            
+
             //var dtoOrders = @order.Select(o => new OrderDto()
             //{
             //    OrderId = o.OrderId,
@@ -41,11 +44,13 @@ namespace TicketManagementApplicationAPI.Controllers
         {
             var @order = await _orderRepository.GetById(id);
 
-            if (@order == null)
-            {
-                return NotFound();
-            }
+            var orderDto = _mapper.Map<OrderDto>(@order);
 
+            return Ok(orderDto);
+            //if (@order == null)
+            //{
+            //    return NotFound();
+            //}
             //var dtoOrder = new OrderDto()
             //{
             //    OrderId = @order.OrderId,
@@ -53,26 +58,26 @@ namespace TicketManagementApplicationAPI.Controllers
             //    TotalPrice = @order.TotalPrice,
             //    OrderedAt = @order.OrderedAt
             //};
-            var orderDto = _mapper.Map<OrderDto>(@order);
-
-            return Ok(orderDto);
         }
 
         [HttpPatch]
         public async Task<ActionResult<OrderPatchDto>> Patch(OrderPatchDto orderPatch)
         {
+            if (orderPatch == null)
+                throw new ArgumentNullException(nameof(orderPatch));
+
             var orderEntity = await _orderRepository.GetById(orderPatch.OrderId);
 
             if (orderEntity == null)
             {
                 return NotFound();
             }
-            _mapper.Map(orderPatch, orderEntity);
+            
             if (orderPatch.NumberOfTickets != 0)
                 orderEntity.NumberOfTickets = orderPatch.NumberOfTickets;
 
             _orderRepository.Update(orderEntity);
-
+            _mapper.Map(orderPatch, orderEntity);
             return Ok(orderEntity);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TicketManagementApplicationAPI.Exceptions;
 using TicketManagementApplicationAPI.Model;
 
 namespace TicketManagementApplicationAPI.Repositories
@@ -32,6 +33,9 @@ namespace TicketManagementApplicationAPI.Repositories
         public async Task<Event> GetById(int id)
         {
             var @event = await _dbContext.Events.Where(e => e.EventId == id).FirstOrDefaultAsync();
+           
+            if (@event == null) 
+                throw new EntityNotFoundException(id, nameof(Event));
 
             return @event;
         }
