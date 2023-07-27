@@ -21,16 +21,19 @@ namespace TicketManagementApplicationAPI.Controllers
         {
             var @order = _orderRepository.GetAll();
 
-            var dtoOrders = @order.Select(o => new OrderDto()
-            {
-                OrderId = o.OrderId,
-                NumberOfTickets = o.NumberOfTickets,
-                TotalPrice = o.TotalPrice,
-                OrderedAt = o.OrderedAt
-            });
-            //var orderDto = _mapper.Map<OrderDto>(@order);
+            var dtoOrdersMapper = _mapper.Map<List<OrderDto>>(@order);
 
-            return Ok(dtoOrders);
+            return Ok(dtoOrdersMapper);
+            
+            //var dtoOrders = @order.Select(o => new OrderDto()
+            //{
+            //    OrderId = o.OrderId,
+            //    NumberOfTickets = o.NumberOfTickets,
+            //    TotalPrice = o.TotalPrice,
+            //    OrderedAt = o.OrderedAt
+            //});
+            //var dtoOrders = _mapper.Map<OrderDto>(@order);
+            //return Ok(dtoOrders);
         }
   
         [HttpGet]
@@ -72,6 +75,7 @@ namespace TicketManagementApplicationAPI.Controllers
 
             return Ok(orderEntity);
         }
+
         [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
