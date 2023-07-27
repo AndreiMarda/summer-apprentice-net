@@ -87,3 +87,6 @@ C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementAppli
 C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\AutoMapper.dll
 C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\NLog.dll
+C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\NLog.Extensions.Logging.dll
+C:\Users\andre\source\repos\TicketManagementApplicationAPI\TicketManagementApplicationAPI\bin\Debug\net6.0\NLog.Web.AspNetCore.dll

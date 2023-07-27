@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using TicketManagementApplicationAPI.Model.Dto;
 using TicketManagementApplicationAPI.Repositories;
 
@@ -11,24 +10,25 @@ namespace TicketManagementApplicationAPI.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly Mapper _mapper;
-        public OrdersController(IOrderRepository orderRepository, Mapper mapper)
+        private readonly IMapper _mapper;
+        public OrdersController(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<List<OrderDto>>> GetAll()
+        public ActionResult<List<OrderDto>> GetAll()
         {
-            var orders = _orderRepository.GetAll();
+            var @order = _orderRepository.GetAll();
 
-            var dtoOrders = orders.Select(o => new OrderDto()
+            var dtoOrders = @order.Select(o => new OrderDto()
             {
                 OrderId = o.OrderId,
                 NumberOfTickets = o.NumberOfTickets,
                 TotalPrice = o.TotalPrice,
                 OrderedAt = o.OrderedAt
             });
+            //var orderDto = _mapper.Map<OrderDto>(@order);
 
             return Ok(dtoOrders);
         }

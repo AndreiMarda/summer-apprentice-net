@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using TicketManagementApplicationAPI.Model;
 using TicketManagementApplicationAPI.Model.Dto;
 using TicketManagementApplicationAPI.Repositories;
 
@@ -21,7 +17,7 @@ namespace TicketManagementApplicationAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<List<EventDto>>> GetAll()
+        public ActionResult<List<EventDto>> GetAll()
         {
             var events = _eventRepository.GetAll();
             var dtoEvents = new List<EventDto>();
