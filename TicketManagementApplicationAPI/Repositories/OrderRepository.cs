@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TicketManagementApplicationAPI.Exceptions;
 using TicketManagementApplicationAPI.Model;
 
@@ -12,17 +11,16 @@ namespace TicketManagementApplicationAPI.Repositories
         {
             _dbContext = new TicketManagementApplicationContext();
         }
-        public void Add(Order order)
+        public async Task Add(Order order)
         {
             _dbContext.Orders.Add(order);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<Order> GetAll()
+        public async Task<IEnumerable<Order>> GetAll()
         {
-            var orders = _dbContext.Orders;
-
-            return orders;
+            //var orders = _dbContext.Orders;
+            return _dbContext.Orders;
         }
 
         public async Task<Order> GetById(int id)
@@ -35,15 +33,15 @@ namespace TicketManagementApplicationAPI.Repositories
             return order;
         }
 
-        public void Update(Order order)
+        public async Task Update(Order order)
         {
             _dbContext.Entry(order).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
-        public void Delete(Order order)
+        public async Task Delete(Order order)
         {
             _dbContext.Remove(order);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

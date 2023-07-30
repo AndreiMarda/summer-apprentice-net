@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using TicketManagementApplicationAPI.Exceptions;
 using TicketManagementApplicationAPI.Model;
 
@@ -7,25 +8,24 @@ namespace TicketManagementApplicationAPI.Repositories
     public class EventRepository : IEventRepository
     {
         private readonly TicketManagementApplicationContext _dbContext;
-
         public EventRepository() 
         {
             _dbContext = new TicketManagementApplicationContext();
         }
 
-        public void Add(Event @event)
+        public async Task Add(Event @event)
         {
             _dbContext.Add(@event);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Delete(Event @event)
+        public async Task Delete(Event @event)
         {
             _dbContext.Remove(@event);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<Event> GetAll()
+        public async Task<IEnumerable<Event>> GetAll()
         {
             var events = _dbContext.Events;
             return events;
@@ -40,10 +40,10 @@ namespace TicketManagementApplicationAPI.Repositories
             return @event;
         }
 
-        public void Update(Event @event)
+        public async Task Update(Event @event)
         {
             _dbContext.Entry(@event).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

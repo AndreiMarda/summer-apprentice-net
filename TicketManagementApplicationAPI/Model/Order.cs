@@ -15,7 +15,7 @@ public partial class Order
 
     public int NumberOfTickets { get; set; }
 
-    public double TotalPrice { get; set; }
+    public decimal TotalPrice { get; set; }
 
     public virtual Customer? Customer { get; set; } = null!;
 

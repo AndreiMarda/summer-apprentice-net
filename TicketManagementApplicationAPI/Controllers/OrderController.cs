@@ -7,57 +7,47 @@ namespace TicketManagementApplicationAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        public OrdersController(IOrderRepository orderRepository, IMapper mapper, ILogger logger)
+        private readonly IEventRepository _eventRepository;
+        private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IVenueRepository _venueRepository;
+        public OrderController(IOrderRepository orderRepository, IMapper mapper, ILogger logger, 
+            IEventRepository eventRepository, IEventTypeRepository eventTypeRepository, IVenueRepository venueRepository)
         {
-            _orderRepository = orderRepository;
-            _mapper = mapper;
-            _logger = logger;
+            _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
+            _eventTypeRepository = eventTypeRepository ?? throw new ArgumentNullException(nameof(eventTypeRepository));
+            _venueRepository = _venueRepository ?? throw new ArgumentNullException(nameof(venueRepository));
         }
         [HttpGet]
-        public ActionResult<List<OrderDto>> GetAll()
+        public async Task <ActionResult<IEnumerable<OrderDto>>> GetAll()
         {
+            var @order = await _orderRepository.GetAll();
 
-            var @order = _orderRepository.GetAll();
-
-            var dtoOrdersMapper = _mapper.Map<List<OrderDto>>(@order);
+            var dtoOrdersMapper = _mapper.Map<IEnumerable<OrderDto>>(@order);
 
             return Ok(dtoOrdersMapper);
-
-            //var dtoOrders = @order.Select(o => new OrderDto()
-            //{
-            //    OrderId = o.OrderId,
-            //    NumberOfTickets = o.NumberOfTickets,
-            //    TotalPrice = o.TotalPrice,
-            //    OrderedAt = o.OrderedAt
-            //});
-            //var dtoOrders = _mapper.Map<OrderDto>(@order);
-            //return Ok(dtoOrders);
         }
   
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> GetById(int id)
         {
             var @order = await _orderRepository.GetById(id);
 
+            if(@order == null)
+            {
+                return NotFound();
+            }
+
             var orderDto = _mapper.Map<OrderDto>(@order);
 
             return Ok(orderDto);
-            //if (@order == null)
-            //{
-            //    return NotFound();
-            //}
-            //var dtoOrder = new OrderDto()
-            //{
-            //    OrderId = @order.OrderId,
-            //    NumberOfTickets = @order.NumberOfTickets,
-            //    TotalPrice = @order.TotalPrice,
-            //    OrderedAt = @order.OrderedAt
-            //};
         }
 
         [HttpPatch]
@@ -68,6 +58,10 @@ namespace TicketManagementApplicationAPI.Controllers
 
             var orderEntity = await _orderRepository.GetById(orderPatch.OrderId);
 
+            await _orderRepository.GetAll();
+            await _venueRepository.GetAll();
+            await _eventTypeRepository.GetAll();
+
             if (orderEntity == null)
             {
                 return NotFound();
@@ -75,16 +69,19 @@ namespace TicketManagementApplicationAPI.Controllers
             
             if (orderPatch.NumberOfTickets != 0)
                 orderEntity.NumberOfTickets = orderPatch.NumberOfTickets;
+            if (orderPatch.TotalPrice != 0)
+                orderEntity.TotalPrice = orderPatch.TotalPrice;
 
-            _orderRepository.Update(orderEntity);
             _mapper.Map(orderPatch, orderEntity);
+            await _orderRepository.Update(orderEntity);
             return Ok(orderEntity);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             var orderEntity = await _orderRepository.GetById(id);
+
             if(orderEntity == null)
             {
                 return NotFound();

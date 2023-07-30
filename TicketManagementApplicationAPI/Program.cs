@@ -3,7 +3,6 @@ using NLog;
 using NLog.Web;
 using TicketManagementApplicationAPI.Middleware;
 using TicketManagementApplicationAPI.Repositories;
-using TicketManagementApplicationAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -15,10 +14,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<ITestService, TestService>();
-
+builder.Services.AddTransient<IVenueRepository, VenueRepository>();
 builder.Services.AddTransient<IEventRepository, EventRepository>();
+builder.Services.AddTransient<IEventTypeRepository, EventTypeRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 
 builder.Logging.ClearProviders();
@@ -42,3 +40,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
