@@ -8,42 +8,45 @@ namespace TicketManagementApplicationAPI.Repositories
     public class EventRepository : IEventRepository
     {
         private readonly TicketManagementApplicationContext _dbContext;
-        public EventRepository() 
+        public EventRepository()
         {
             _dbContext = new TicketManagementApplicationContext();
         }
 
-        public async Task Add(Event @event)
+        public void Add(Event @event)
         {
             _dbContext.Add(@event);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Event @event)
+        public void Delete(Event @event)
         {
             _dbContext.Remove(@event);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetAll()
+        public IEnumerable<Event> GetAll()
         {
-            var events = _dbContext.Events;
+            var events = _dbContext.Events
+                .Include (e => e.EventType)
+                .Include(e => e.Venue)
+                .ToList();
             return events;
         }
         public async Task<Event> GetById(int id)
         {
             var @event = await _dbContext.Events.Where(e => e.EventId == id).FirstOrDefaultAsync();
-           
-            if (@event == null) 
+
+            if (@event == null)
                 throw new EntityNotFoundException(id, nameof(Event));
 
             return @event;
         }
 
-        public async Task Update(Event @event)
+        public void Update(Event @event)
         {
             _dbContext.Entry(@event).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
     }
 }

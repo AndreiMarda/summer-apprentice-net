@@ -3,10 +3,10 @@ namespace TicketManagementApplicationAPI.Repositories
 {
     public interface IEventRepository
     {
-        Task<IEnumerable<Event>> GetAll();
+        IEnumerable<Event> GetAll();
         Task<Event> GetById(int id);
-        Task Add(Event @event);
-        Task Update(Event @event);
-        Task Delete(Event @event);
+        void Add(Event @event);
+        void Update(Event @event);
+        void Delete(Event @event);
     }
 }

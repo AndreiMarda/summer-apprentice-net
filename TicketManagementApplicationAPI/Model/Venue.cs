@@ -14,4 +14,8 @@ public partial class Venue
     public int? Capacity { get; set; }
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+    public override string ToString()
+    {
+        return Location;
+    }
 }

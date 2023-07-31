@@ -11,37 +11,37 @@ namespace TicketManagementApplicationAPI.Repositories
         {
             _dbContext = new TicketManagementApplicationContext();
         }
-        public async Task Add(Order order)
+        public void Add(Order order)
         {
             _dbContext.Orders.Add(order);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetAll()
+        public IEnumerable<Order> GetAll()
         {
-            //var orders = _dbContext.Orders;
-            return _dbContext.Orders;
+            var orders = _dbContext.Orders;
+            return orders;
         }
 
         public async Task<Order> GetById(int id)
         {
             var order = await _dbContext.Orders.Where(e => e.OrderId == id).FirstOrDefaultAsync();
-           
+
             if (order == null)
                 throw new EntityNotFoundException(id, nameof(Order));
 
             return order;
         }
 
-        public async Task Update(Order order)
+        public void Update(Order order)
         {
             _dbContext.Entry(order).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
-        public async Task Delete(Order order)
+        public void Delete(Order order)
         {
             _dbContext.Remove(order);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChangesAsync();
         }
     }
 }

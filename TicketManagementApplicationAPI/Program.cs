@@ -14,9 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IVenueRepository, VenueRepository>();
 builder.Services.AddTransient<IEventRepository, EventRepository>();
-builder.Services.AddTransient<IEventTypeRepository, EventTypeRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 
 builder.Logging.ClearProviders();
