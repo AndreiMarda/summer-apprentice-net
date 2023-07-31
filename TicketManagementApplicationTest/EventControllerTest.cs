@@ -24,7 +24,8 @@ namespace TicketManagerSystem.UnitTests
             _mapperMoq = new Mock<IMapper>();
             _moqList = new List<Event>
             {
-                new Event {EventId = 1,
+                new Event {
+                    EventId = 1,
                     EventName = "Moq name",
                     EventDescription = "Moq description",
                     EndDate = DateTime.Now,
@@ -47,8 +48,6 @@ namespace TicketManagerSystem.UnitTests
                 }
             };
         }
-
-
 
         [TestMethod]
         public async Task GetAllEventsReturnListOfEvents()
@@ -89,8 +88,6 @@ namespace TicketManagerSystem.UnitTests
             Assert.IsTrue(eventResult.StatusCode == 404);
         }
 
-
-
         [TestMethod]
         public async Task GetEventByIdReturnFirstRecord()
         {
@@ -109,8 +106,6 @@ namespace TicketManagerSystem.UnitTests
             Assert.IsFalse(string.IsNullOrEmpty(eventCount.EventName));
             Assert.AreEqual(1, eventCount.EventId);
         }
-
-
 
         /*[TestMethod]
          public async Task GetEventByIDThrowsAnException()
